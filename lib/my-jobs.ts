@@ -172,6 +172,7 @@ export function addMyJob(input: Partial<MyJob> & { company: string; title: strin
     title: input.title.trim(),
     created_at: input.created_at ?? now(),
     updated_at: now(),
+    ...(input.status === "applied" && !input.applied_at && { applied_at: now() }),
   };
   write([job, ...read()]);
   return job;
