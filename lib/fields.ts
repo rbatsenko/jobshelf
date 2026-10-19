@@ -191,3 +191,21 @@ const MATCHERS = FIELDS.filter((f) => f.titles.length).map((f) => ({
 export function fieldOf(title: string): string {
   return MATCHERS.find((m) => m.re.test(title))?.key ?? "other";
 }
+
+/** Seniority words in a title, most senior first. "Staff" only counts in front of a craft, not "Staff Accountant". */
+const LEVELS: readonly [string, RegExp][] = [
+  ["C-level", /\b(chief|cto|cfo|coo|cmo|cpo)\b/i],
+  ["VP", /\b(vp|vice president)\b/i],
+  ["Director", /\b(director|head of)\b/i],
+  ["Principal", /\bprincipal\b/i],
+  ["Staff", /\bstaff (software|engineer|developer|data|product|designer|scientist|ml|machine|frontend|backend|full)/i],
+  ["Lead", /\blead\b(?! gen)/i],
+  ["Senior", /\b(senior|sr)\b/i],
+  ["Junior", /\b(junior|jr|entry[- ]level|graduate)\b/i],
+  ["Intern", /\b(intern|internship)\b/i],
+];
+
+/** How senior a role reads from its title, or null when the title doesn't say. */
+export function levelOf(title: string): string | null {
+  return LEVELS.find(([, re]) => re.test(title))?.[0] ?? null;
+}

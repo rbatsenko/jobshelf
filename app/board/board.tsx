@@ -3,9 +3,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ProfileForm from "@/components/profile-form";
 import Select from "@/components/select";
-import { ScopeTag, money } from "@/components/bits";
+import { JobTags, Salary, ScopeTag, sinceLabel } from "@/components/bits";
 import { COUNTRY_OPTIONS } from "@/lib/countries";
-import { FIELDS, fieldLabel } from "@/lib/fields";
+import { FIELDS } from "@/lib/fields";
 import { MAX_LIMIT } from "@/lib/types";
 import { addFromBoard, trackedOrigins } from "@/lib/my-jobs";
 import { SOURCE_INFO, sourceName } from "@/lib/sources/info";
@@ -289,6 +289,8 @@ export default function Board() {
         {rows.map((j, i) => {
           const key = `${j.source}:${j.external_id}`;
           const have = tracked.has(key);
+          const posted = sinceLabel(j.posted_at);
+          const fresh = posted === "today" || posted === "yesterday";
           return (
             <li
               key={j.id}
@@ -319,12 +321,18 @@ export default function Board() {
                   <span className="text-lg font-semibold leading-snug group-hover:underline">{j.title}</span>
                   <span className="truncate text-base text-soft">{j.company}</span>
                 </span>
-                <span className="mt-1.5 flex flex-wrap items-center gap-2.5 text-sm text-faint">
-                  <ScopeTag scope={j.remote_scope} />
-                  {j.field !== "other" && <span className="rounded-md bg-sunken px-2 py-0.5">{fieldLabel(j.field)}</span>}
-                  {money(j) && <span className="text-soft">{money(j)}</span>}
-                  <span className="truncate">{j.location}</span>
-                  <span>via {sourceName(j.source)}</span>
+                <span className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-faint">
+                  <JobTags title={j.title} field={j.field} employment={j.employment} />
+                  {j.remote_scope === "unknown" ? (
+                    j.location && <span className="truncate">{j.location}</span>
+                  ) : (
+                    <ScopeTag scope={j.remote_scope} location={j.location} />
+                  )}
+                  <Salary job={j} />
+                  <span className="sm:ml-auto">
+                    {posted && <span className={fresh ? "text-brand" : ""}>{posted} </span>}
+                    on {sourceName(j.source)}
+                  </span>
                 </span>
               </a>
 

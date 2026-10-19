@@ -1,7 +1,9 @@
 "use client";
 
+import type { ReactNode } from "react";
 import Select from "./select";
 import { COUNTRY_OPTIONS, countryName } from "@/lib/countries";
+import { fieldLabel, fieldOf, levelOf } from "@/lib/fields";
 import { inferScope } from "@/lib/score";
 import { STATUSES, type Status } from "@/lib/types";
 
@@ -98,17 +100,71 @@ const SCOPE_LABEL: Record<string, string> = {
 
 export const scopeLabel = (scope: string) => SCOPE_LABEL[scope] ?? countryName(scope);
 
-export function ScopeTag({ scope }: { scope: string }) {
+/** Where the job can be done from. The raw location text shows on hover. */
+export function ScopeTag({ scope, location }: { scope: string; location?: string | null }) {
   const outOfReach = scope === "us";
   return (
     <span
-      className={`inline-flex h-7 items-center rounded-md px-2.5 text-sm ${
-        outOfReach ? "bg-sunken text-faint" : "bg-brand-soft text-brand"
-      }`}
+      title={location ?? undefined}
+      className={`inline-flex items-center gap-1.5 text-sm ${outOfReach ? "text-faint" : "font-medium text-brand"}`}
     >
+      <svg viewBox="0 0 16 16" className="size-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+        <circle cx="8" cy="8" r="6.25" />
+        <path d="M1.75 8h12.5M8 1.75c1.7 1.8 2.5 3.9 2.5 6.25S9.7 12.45 8 14.25C6.3 12.45 5.5 10.35 5.5 8S6.3 3.55 8 1.75Z" />
+      </svg>
       {scopeLabel(scope)}
     </span>
   );
+}
+
+const tag = "inline-flex h-7 items-center whitespace-nowrap rounded-md px-2.5 text-sm";
+
+/** The kind of work, tinted per field so rows can be told apart at a glance. */
+function FieldTag({ field }: { field: string }) {
+  if (field === "other") return null;
+  return (
+    <span data-field={field} className={`field-tag ${tag} gap-1.5 font-medium`}>
+      <span className="size-1.5 rounded-full bg-current" aria-hidden />
+      {fieldLabel(field)}
+    </span>
+  );
+}
+
+/** Seniority, contract type and the like: outlined so they read as secondary to the field. */
+function PlainTag({ children }: { children: ReactNode }) {
+  return <span className={`${tag} border border-line text-soft`}>{children}</span>;
+}
+
+const EMPLOYMENT: [RegExp, string][] = [
+  [/contract|freelance/i, "Contract"],
+  [/part[\s_-]?time/i, "Part-time"],
+  [/intern/i, "Internship"],
+  [/temp/i, "Temporary"],
+];
+
+/** Only the exceptions: full-time is the norm on these boards, so it gets no tag. */
+export const employmentLabel = (employment: string | null | undefined) =>
+  employment ? (EMPLOYMENT.find(([re]) => re.test(employment))?.[1] ?? null) : null;
+
+/** Field, seniority and contract type, read from the listing. Renders nothing when none apply. */
+export function JobTags({ title, field, employment }: { title: string; field?: string; employment?: string | null }) {
+  const kind = field ?? fieldOf(title);
+  const level = levelOf(title);
+  // An intern listing already says so in its level tag.
+  const contract = level === "Intern" ? null : employmentLabel(employment);
+  if (kind === "other" && !level && !contract) return null;
+  return (
+    <span className="flex flex-wrap gap-1.5">
+      <FieldTag field={kind} />
+      {level && <PlainTag>{level}</PlainTag>}
+      {contract && <PlainTag>{contract}</PlainTag>}
+    </span>
+  );
+}
+
+export function Salary({ job }: { job: Parameters<typeof money>[0] }) {
+  const text = money(job);
+  return text ? <span className="text-sm font-semibold tabular-nums text-text">{text}</span> : null;
 }
 
 const SCOPE_OPTIONS = [

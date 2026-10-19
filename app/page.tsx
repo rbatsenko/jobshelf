@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import AddJobForm from "@/components/add-job-form";
 import FeatureTip from "@/components/feature-tip";
-import { ScopeTag, StageBar, money, sinceLabel, stageLabel } from "@/components/bits";
+import { JobTags, Salary, ScopeTag, StageBar, sinceLabel, stageLabel } from "@/components/bits";
 import JobEditor from "@/components/job-editor";
 import SavingHelp from "@/components/saving-help";
 import Select from "@/components/select";
@@ -349,9 +349,12 @@ export default function MyJobsPage() {
                     <span className="text-lg font-semibold leading-snug">{job.title}</span>
                     <span className="truncate text-base text-soft">{job.company}</span>
                   </span>
-                  <span className="mt-1.5 flex flex-wrap items-center gap-2.5 text-sm text-faint">
-                    {job.remote_scope && job.remote_scope !== "unknown" && <ScopeTag scope={job.remote_scope} />}
-                    {money(job) && <span className="text-soft">{money(job)}</span>}
+                  <span className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-faint">
+                    <JobTags title={job.title} />
+                    {job.remote_scope && job.remote_scope !== "unknown" && (
+                      <ScopeTag scope={job.remote_scope} location={job.location} />
+                    )}
+                    <Salary job={job} />
                     {job.applied_at && <span>applied {sinceLabel(job.applied_at)}</span>}
                     {job.next_action && <span className="text-brand">next: {job.next_action}</span>}
                   </span>

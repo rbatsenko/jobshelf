@@ -97,6 +97,40 @@ html, body {
 
 ::selection { background: var(--brand); color: var(--brand-text); }
 
+/*
+ * One hue per field, so a list can be scanned by colour as well as by word.
+ * The tag tints its background and text from --hue; the label carries the meaning.
+ */
+[data-field] { --hue: var(--quiet); }
+[data-field="engineering"] { --hue: #3b4fd0; }
+[data-field="data"] { --hue: #0b7a84; }
+[data-field="design"] { --hue: #a92fae; }
+[data-field="product"] { --hue: #6a46d4; }
+[data-field="marketing"] { --hue: #c0530f; }
+[data-field="sales"] { --hue: #946300; }
+[data-field="support"] { --hue: #0a73a3; }
+[data-field="people"] { --hue: #c0325f; }
+[data-field="finance"] { --hue: #4d7a10; }
+[data-field="operations"] { --hue: #4f6478; }
+
+:root[data-theme="dark"] {
+  [data-field="engineering"] { --hue: #8c9dff; }
+  [data-field="data"] { --hue: #4fcfd6; }
+  [data-field="design"] { --hue: #ec8af0; }
+  [data-field="product"] { --hue: #b4a2ff; }
+  [data-field="marketing"] { --hue: #f8a462; }
+  [data-field="sales"] { --hue: #e6c056; }
+  [data-field="support"] { --hue: #6cc6f2; }
+  [data-field="people"] { --hue: #f78fb0; }
+  [data-field="finance"] { --hue: #a8d665; }
+  [data-field="operations"] { --hue: #a8bdd2; }
+}
+
+.field-tag {
+  background: color-mix(in oklab, var(--hue) 12%, transparent);
+  color: color-mix(in oklab, var(--hue) 88%, var(--text));
+}
+
 .scroll-thin { scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; }
 
 @keyframes tip-in {
