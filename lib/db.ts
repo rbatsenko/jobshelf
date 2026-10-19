@@ -84,13 +84,29 @@ export function db(): Database.Database {
   return instance;
 }
 
-/** Columns added after the first release. */
+/** Columns added after the first release, and dates stored before they were normalised. */
 function migrate(d: Database.Database) {
   const columns = (d.pragma("table_info(jobs)") as { name: string }[]).map((c) => c.name);
   if (!columns.includes("field")) {
     d.exec(`ALTER TABLE jobs ADD COLUMN field TEXT NOT NULL DEFAULT 'other'`);
     reclassifyAll(d);
   }
+
+  const stale = d.prepare(`SELECT id, posted_at FROM jobs WHERE posted_at IS NOT NULL AND posted_at NOT LIKE '%Z'`).all() as {
+    id: number;
+    posted_at: string;
+  }[];
+  const fix = d.prepare(`UPDATE jobs SET posted_at = ? WHERE id = ?`);
+  d.transaction(() => stale.forEach((r) => fix.run(isoDate(r.posted_at), r.id)))();
+}
+
+/**
+ * Boards send dates as ISO, ISO without a zone, or RSS's "Thu, 09 Jul 2026 …".
+ * Newest-first sorts the text, so everything is stored as UTC ISO.
+ */
+function isoDate(s: string | null | undefined) {
+  const t = s ? new Date(s) : null;
+  return t && !Number.isNaN(t.getTime()) ? t.toISOString() : null;
 }
 
 export const isPersistent = () => (db(), persistent);
@@ -126,11 +142,12 @@ export function upsertJobs(incoming: IncomingJob[]) {
       if (!exists.get(j.source, id)) inserted++;
       upsert.run({
         company_url: null, location: null, employment: null, salary_min: null, salary_max: null,
-        currency: null, salary_period: null, description: null, posted_at: null,
+        currency: null, salary_period: null, description: null,
         ...j,
         external_id: id,
         remote_scope: j.remote_scope ?? "unknown",
         field: fieldOf(j.title),
+        posted_at: isoDate(j.posted_at),
         tags: JSON.stringify(j.tags ?? []),
         at,
       });
