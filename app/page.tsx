@@ -344,11 +344,11 @@ export default function MyJobsPage() {
                 className="flex w-full flex-col items-start gap-2.5 px-4 py-4 text-left transition hover:bg-sunken sm:flex-row sm:items-center sm:gap-5 sm:px-5"
               >
                 <span className="w-full min-w-0 flex-1">
-                  <span className="flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5">
-                    {job.starred && <span className="text-brand">★</span>}
-                    <span className="text-lg font-semibold leading-snug">{job.title}</span>
-                    <span className="truncate text-base text-soft">{job.company}</span>
+                  <span className="block text-lg font-semibold leading-snug">
+                    {job.starred && <span className="mr-2 text-brand">★</span>}
+                    {job.title}
                   </span>
+                  <span className="mt-0.5 block truncate text-base text-text">{job.company}</span>
                   <span className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-faint">
                     <JobTags title={job.title} />
                     {job.remote_scope && job.remote_scope !== "unknown" && (

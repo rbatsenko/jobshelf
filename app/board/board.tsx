@@ -317,10 +317,8 @@ export default function Board() {
                 rel="noopener"
                 className={`group min-w-0 flex-1 ${scored ? "basis-[calc(100%-4rem)]" : "basis-full"} sm:basis-auto`}
               >
-                <span className="flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5">
-                  <span className="text-lg font-semibold leading-snug group-hover:underline">{j.title}</span>
-                  <span className="truncate text-base text-soft">{j.company}</span>
-                </span>
+                <span className="block text-lg font-semibold leading-snug group-hover:underline">{j.title}</span>
+                <span className="mt-0.5 block truncate text-base text-text">{j.company}</span>
                 <span className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-faint">
                   <JobTags title={j.title} field={j.field} employment={j.employment} />
                   {j.remote_scope === "unknown" ? (
