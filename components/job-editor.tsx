@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { ScopePicker, StagePicker, scopeAfterLocationEdit } from "./bits";
+import { ScopePicker, StagePicker, StarIcon, scopeAfterLocationEdit } from "./bits";
 import DatePicker, { dayOf } from "./date-picker";
 import SalaryFields, { fromDraft, toDraft, type SalaryDraft } from "./salary-fields";
-import { input, label, textarea, secondaryButton } from "./styles";
+import { buttonMotion, input, label, textarea, secondaryButton } from "./styles";
+import Swap from "./swap";
 import type { MyJob } from "@/lib/my-jobs";
 
 type JobEditorProps = {
@@ -139,9 +140,19 @@ export default function JobEditor({ job, onChange, onDelete, onClose }: JobEdito
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => onChange({ starred: !job.starred })}
-              className={job.starred ? "h-11 rounded-field bg-brand-soft px-4 text-base font-medium text-brand" : secondaryButton}
+              aria-pressed={job.starred}
+              // 2px less on the icon side, which otherwise looks wider than the text side.
+              className={`h-11 whitespace-nowrap rounded-field border ps-3.5 pe-4 text-base font-medium ${buttonMotion} ${
+                job.starred
+                  ? "border-transparent bg-brand-soft text-brand"
+                  : "border-line text-soft hover:bg-sunken hover:text-text"
+              }`}
             >
-              ★ {job.starred ? "Starred" : "Star"}
+              <Swap
+                on={job.starred}
+                off={{ icon: <StarIcon filled={false} />, label: "Star" }}
+                active={{ icon: <StarIcon filled />, label: "Starred" }}
+              />
             </button>
             {job.url && (
               <a href={job.url} target="_blank" rel="noopener" className={`${secondaryButton} flex items-center`}>
@@ -155,17 +166,20 @@ export default function JobEditor({ job, onChange, onDelete, onClose }: JobEdito
             {confirming ? (
               <div className="flex items-center gap-2">
                 <span className="text-sm text-soft">Remove this job?</span>
-                <button onClick={onDelete} className="h-9 rounded-md bg-closed px-3 text-sm font-semibold text-white">
+                <button onClick={onDelete} className={`h-9 rounded-md bg-closed px-3 text-sm font-semibold text-white hover:brightness-110 ${buttonMotion}`}>
                   Remove
                 </button>
-                <button onClick={() => setConfirming(false)} className="h-9 rounded-md border border-line px-3 text-sm text-soft">
+                <button
+                  onClick={() => setConfirming(false)}
+                  className={`h-9 rounded-md border border-line px-3 text-sm text-soft hover:bg-raised hover:text-text ${buttonMotion}`}
+                >
                   Keep
                 </button>
               </div>
             ) : (
               <button
                 onClick={() => setConfirming(true)}
-                className="text-sm text-faint underline-offset-4 hover:text-closed hover:underline"
+                className="text-sm text-faint underline-offset-4 transition-colors hover:text-closed hover:underline"
               >
                 Remove this job
               </button>
@@ -202,55 +216,40 @@ function CopyButton({ text, fieldId }: CopyButtonProps) {
     }
   }
 
-  // A width can only transition between two numbers, so the button takes its
-  // label's measured width; the observer also catches the web font swapping in.
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const labelRef = useRef<HTMLSpanElement>(null);
-  const [width, setWidth] = useState<number>();
-  useEffect(() => {
-    const button = buttonRef.current;
-    const label = labelRef.current;
-    if (!button || !label) return;
-    const observer = new ResizeObserver(() =>
-      setWidth(label.offsetWidth + button.offsetWidth - button.clientWidth),
-    );
-    observer.observe(label);
-    return () => observer.disconnect();
-  }, []);
-
   const copied = state === "copied";
   return (
     <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
       <button
-        ref={buttonRef}
         type="button"
         onClick={copy}
-        style={{
-          width,
-          transition:
-            "width 350ms cubic-bezier(0.2, 0.8, 0.2, 1), color 300ms, background-color 300ms, border-color 300ms, scale 150ms",
-        }}
-        className={`inline-flex h-9 items-center justify-center overflow-hidden rounded-md border text-sm font-medium active:scale-95 ${
+        className={`h-9 rounded-md border ps-2.5 pe-3 text-sm font-medium ${buttonMotion} ${
           copied
             ? "border-brand bg-brand-soft text-brand"
             : "border-line text-soft hover:border-line-strong hover:bg-raised hover:text-text"
         }`}
       >
-        <span ref={labelRef} className="shrink-0 whitespace-nowrap px-3">
-          <span key={String(copied)} className="inline-flex animate-[tip-in_250ms_ease-out] items-center gap-1.5">
-            <svg aria-hidden viewBox="0 0 16 16" className="h-4 w-4 shrink-0">
-              {copied ? (
-                <path d="M3.5 8.5 6.5 11.5 12.5 4.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-              ) : (
-                <g fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round">
+        <Swap
+          on={copied}
+          off={{
+            icon: (
+              <svg aria-hidden viewBox="0 0 16 16" className="size-4">
+                <g fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
                   <rect x="5.5" y="5.5" width="8" height="8" rx="1.5" />
                   <path d="M10.5 3.5v-.5a1.5 1.5 0 0 0-1.5-1.5H4A1.5 1.5 0 0 0 2.5 3v5A1.5 1.5 0 0 0 4 9.5h.5" />
                 </g>
-              )}
-            </svg>
-            {copied ? "Copied" : "Copy message"}
-          </span>
-        </span>
+              </svg>
+            ),
+            label: "Copy message",
+          }}
+          active={{
+            icon: (
+              <svg aria-hidden viewBox="0 0 16 16" className="size-4">
+                <path d="M3.5 8.5 6.5 11.5 12.5 4.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            ),
+            label: "Copied",
+          }}
+        />
       </button>
       <span role="status" className={`text-sm ${state === "failed" ? "text-closed" : "sr-only"}`}>
         {state === "failed" ? "The browser blocked the clipboard. The message is selected, so copy it by hand." : copied ? "Message copied." : ""}

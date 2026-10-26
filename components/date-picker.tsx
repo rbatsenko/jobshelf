@@ -105,7 +105,7 @@ export default function DatePicker({ id, label, value, onChange, max, placeholde
 
   const month = monthOf(cursor);
   const stepMonth = (by: number) => setCursor(new Date(cursor.getFullYear(), cursor.getMonth() + by, 1));
-  const navButton = "flex h-8 w-8 items-center justify-center rounded-md text-soft transition hover:bg-sunken hover:text-text";
+  const navButton = "flex h-8 w-8 items-center justify-center rounded-md text-soft transition-colors hover:bg-sunken hover:text-text";
 
   return (
     <div ref={rootRef} className="relative">
@@ -123,7 +123,7 @@ export default function DatePicker({ id, label, value, onChange, max, placeholde
             setOpen(true);
           }
         }}
-        className={`flex h-11 w-full items-center gap-2 rounded-field border border-line bg-bg pl-3.5 text-left text-base transition hover:border-line-strong ${value ? "pr-10" : "pr-3.5"}`}
+        className={`flex h-11 w-full items-center gap-2 rounded-field border border-line bg-bg pl-3.5 text-left text-base transition-[border-color] hover:border-line-strong ${value ? "pr-10" : "pr-3.5"}`}
       >
         <svg aria-hidden viewBox="0 0 16 16" className="h-4 w-4 shrink-0 text-faint">
           <g fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -141,7 +141,7 @@ export default function DatePicker({ id, label, value, onChange, max, placeholde
           type="button"
           aria-label={`Clear ${label.toLowerCase()}`}
           onClick={() => onChange("")}
-          className="absolute right-2.5 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-md text-faint transition hover:bg-sunken hover:text-text"
+          className="absolute right-2.5 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-md text-faint transition-colors hover:bg-sunken hover:text-text"
         >
           <svg aria-hidden viewBox="0 0 12 12" className="h-3 w-3">
             <path d="M3 3l6 6M9 3l-6 6" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
@@ -153,7 +153,7 @@ export default function DatePicker({ id, label, value, onChange, max, placeholde
         <div
           role="dialog"
           aria-label={label}
-          className="absolute left-0 top-[calc(100%+4px)] z-50 w-[19rem] animate-[tip-in_150ms_ease-out] rounded-card border border-line bg-raised p-3 shadow-[var(--shadow)]"
+          className="pop absolute left-0 top-[calc(100%+4px)] z-50 w-[19rem] rounded-card border border-line bg-raised p-3 shadow-[var(--shadow)]"
         >
           <div className="mb-2 flex items-center justify-between">
             <button type="button" onClick={() => stepMonth(-1)} aria-label="Previous month" className={navButton}>
@@ -201,7 +201,7 @@ export default function DatePicker({ id, label, value, onChange, max, placeholde
                       aria-label={fullDay.format(d)}
                       disabled={!can}
                       onClick={() => pick(day)}
-                      className={`mx-auto flex h-9 w-9 items-center justify-center rounded-md text-sm transition ${
+                      className={`mx-auto flex h-9 w-9 items-center justify-center rounded-md text-sm ${
                         isSelected
                           ? "bg-brand font-semibold text-brand-text"
                           : isCursor
@@ -220,11 +220,11 @@ export default function DatePicker({ id, label, value, onChange, max, placeholde
           </div>
 
           <div className="mt-2 flex items-center justify-between border-t border-line pt-2">
-            <button type="button" onClick={() => pick(today)} className="rounded-md px-2 py-1 text-sm font-medium text-brand transition hover:bg-brand-soft">
+            <button type="button" onClick={() => pick(today)} className="rounded-md px-2 py-1 text-sm font-medium text-brand transition-colors hover:bg-brand-soft">
               Today
             </button>
             {value && (
-              <button type="button" onClick={() => { onChange(""); close(); }} className="rounded-md px-2 py-1 text-sm text-soft transition hover:bg-sunken hover:text-text">
+              <button type="button" onClick={() => { onChange(""); close(); }} className="rounded-md px-2 py-1 text-sm text-soft transition-colors hover:bg-sunken hover:text-text">
                 Clear
               </button>
             )}

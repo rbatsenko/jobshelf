@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Select from "@/components/select";
-import { input as field } from "@/components/styles";
+import { buttonMotion, input as field } from "@/components/styles";
 import { COUNTRY_OPTIONS, countryName } from "@/lib/countries";
 import { FIELDS, fieldLabel, getField } from "@/lib/fields";
 import {
@@ -107,7 +107,7 @@ export default function ProfileForm({
                 type="button"
                 onClick={() => toggleRegion(r.key)}
                 aria-pressed={regions.includes(r.key)}
-                className={`h-11 rounded-field px-4 text-base font-medium transition ${
+                className={`h-11 rounded-field px-4 text-base font-medium ${buttonMotion} ${
                   regions.includes(r.key)
                     ? "bg-brand-soft text-brand"
                     : "border border-line text-soft hover:bg-sunken"
@@ -201,14 +201,14 @@ export default function ProfileForm({
       <div className="mt-7 flex flex-wrap gap-3">
         <button
           type="submit"
-          className="h-11 w-full rounded-field bg-brand px-5 text-base font-semibold text-brand-text sm:w-auto"
+          className={`h-11 w-full rounded-field bg-brand px-5 text-base font-semibold text-brand-text hover:brightness-110 sm:w-auto ${buttonMotion}`}
         >
           Rank the jobs
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="h-11 rounded-field border border-line px-5 text-base font-medium text-soft hover:bg-sunken"
+          className={`h-11 rounded-field border border-line px-5 text-base font-medium text-soft hover:bg-sunken hover:text-text ${buttonMotion}`}
         >
           Cancel
         </button>
@@ -216,7 +216,7 @@ export default function ProfileForm({
           <button
             type="button"
             onClick={onClear}
-            className="h-11 rounded-field px-4 text-base text-faint hover:text-closed"
+            className={`h-11 rounded-field px-4 text-base text-faint hover:text-closed ${buttonMotion}`}
           >
             Turn ranking off
           </button>

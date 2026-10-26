@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ProfileForm from "@/components/profile-form";
 import Select from "@/components/select";
 import { JobTags, Salary, ScopeTag, sinceLabel } from "@/components/bits";
+import { buttonMotion, primaryButton } from "@/components/styles";
 import { COUNTRY_OPTIONS } from "@/lib/countries";
 import { FIELDS } from "@/lib/fields";
 import { MAX_LIMIT } from "@/lib/types";
@@ -146,7 +147,7 @@ export default function Board() {
           <button
             onClick={refresh}
             disabled={busy}
-            className="h-11 w-full whitespace-nowrap rounded-field bg-brand px-5 text-base font-semibold text-brand-text transition hover:brightness-110 disabled:opacity-50 sm:w-auto"
+            className={`${primaryButton} w-full sm:w-auto`}
           >
             {busy ? "Fetching…" : "Fetch new jobs"}
           </button>
@@ -202,7 +203,7 @@ export default function Board() {
 
           <button
             onClick={() => setEditing(true)}
-            className="h-9 rounded-md px-2 text-sm font-medium text-brand underline-offset-4 hover:underline"
+            className={`h-9 rounded-md px-2 text-sm font-medium text-brand underline-offset-4 hover:underline ${buttonMotion}`}
           >
             {profile ? "Fine-tune" : "Set where you can work"}
           </button>
@@ -337,7 +338,7 @@ export default function Board() {
               <button
                 onClick={() => add(j)}
                 disabled={have}
-                className={`h-11 w-full shrink-0 whitespace-nowrap rounded-field px-4 text-base font-medium transition sm:w-auto ${
+                className={`h-11 w-full shrink-0 whitespace-nowrap rounded-field px-4 text-base font-medium sm:w-auto ${buttonMotion} ${
                   have
                     ? "bg-brand-soft text-brand"
                     : "border border-line text-soft hover:border-brand hover:text-brand"
@@ -359,7 +360,7 @@ export default function Board() {
         <div className="mt-5 flex flex-col items-center gap-2">
           <button
             onClick={() => setMore({ key: filterKey, limit: limit + PAGE })}
-            className="h-11 rounded-field border border-line px-5 text-base font-medium text-soft transition hover:bg-sunken hover:text-text"
+            className={`h-11 rounded-field border border-line px-5 text-base font-medium text-soft hover:bg-sunken hover:text-text ${buttonMotion}`}
           >
             Show {Math.min(PAGE, matched - rows.length)} more
           </button>

@@ -170,7 +170,7 @@ export default function Select({
         aria-label={label}
         onClick={() => setOpen((v) => !v)}
         onKeyDown={onKeyDown}
-        className={`flex h-11 w-full items-center gap-2 rounded-field border border-line ${inset ? "bg-bg" : "bg-raised"} px-3.5 text-left text-base transition hover:border-line-strong`}
+        className={`flex h-11 w-full items-center gap-2 rounded-field border border-line ${inset ? "bg-bg" : "bg-raised"} px-3.5 text-left text-base transition-[border-color] hover:border-line-strong`}
       >
         {selected?.swatch && (
           <span
@@ -183,14 +183,16 @@ export default function Select({
         <svg
           aria-hidden
           viewBox="0 0 12 12"
-          className={`h-3 w-3 shrink-0 text-faint transition-transform ${open ? "rotate-180" : ""}`}
+          className={`h-3 w-3 shrink-0 text-faint motion-safe:transition-[rotate] motion-safe:duration-150 motion-safe:ease-out ${open ? "rotate-180" : ""}`}
         >
           <path d="M2 4.5 6 8.5 10 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
 
       {open && (
-        <div className={`absolute ${align === "end" ? "right-0" : "left-0"} top-[calc(100%+4px)] z-50 w-full min-w-[14rem] overflow-hidden rounded-card border border-line bg-raised shadow-[var(--shadow)]`}>
+        <div
+          className={`pop absolute ${align === "end" ? "right-0 [--pop-origin:top_right]" : "left-0"} top-[calc(100%+4px)] z-50 w-full min-w-[14rem] overflow-hidden rounded-card border border-line bg-raised shadow-[var(--shadow)]`}
+        >
           {withSearch && (
             <div className="border-b border-line p-2">
               <input
@@ -203,7 +205,8 @@ export default function Select({
                 onKeyDown={onKeyDown}
                 placeholder="Type to filter"
                 aria-label={`Filter ${label}`}
-                className="h-9 w-full rounded-md border border-line bg-bg px-2.5 text-base outline-none focus:border-brand"
+                // 7px inside the 8px inset and 1px border keeps the corners concentric with the 16px panel.
+                className="h-9 w-full rounded-[7px] border border-line bg-bg px-2.5 text-base outline-none focus:border-brand"
               />
             </div>
           )}
@@ -213,7 +216,7 @@ export default function Select({
             id={listId}
             role="listbox"
             aria-label={label}
-            className="scroll-thin max-h-72 overflow-y-auto py-1"
+            className="scroll-thin max-h-72 overflow-y-auto overscroll-contain py-1"
           >
             {grouped.map((section, gi) => (
               <li key={section.group ?? gi} role="presentation">

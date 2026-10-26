@@ -26,7 +26,7 @@ export default function Nav() {
                 key={t.href}
                 href={t.href}
                 aria-current={active ? "page" : undefined}
-                className={`flex h-10 items-center whitespace-nowrap rounded-field px-3 text-[0.9375rem] font-medium transition sm:px-4 sm:text-base ${
+                className={`flex h-10 items-center whitespace-nowrap rounded-field px-3 text-[0.9375rem] font-medium transition-colors sm:px-4 sm:text-base ${
                   active ? "bg-brand-soft text-brand" : "text-soft hover:bg-sunken hover:text-text"
                 }`}
               >

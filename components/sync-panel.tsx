@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { sinceLabel } from "./bits";
-import { card, input, primaryButton, secondaryButton } from "./styles";
+import { buttonMotion, card, input, primaryButton, secondaryButton } from "./styles";
 import { deleteSynced, forgetSync, newCode, normalizeCode, prettyCode, syncNow, type SyncState } from "@/lib/sync";
 
 type SyncPanelProps = {
@@ -94,7 +94,7 @@ export default function SyncPanel({ state, available, onSync, onChange, onClose 
                 setNote("Deleted the synced copy. Other devices keep what they already have.");
                 onChange();
               }}
-              className="h-11 rounded-field px-4 text-base text-faint hover:text-closed"
+              className={`h-11 rounded-field px-4 text-base text-faint hover:text-closed ${buttonMotion}`}
             >
               Delete synced copy
             </button>

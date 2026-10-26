@@ -32,6 +32,21 @@ const TONE_STYLE: Record<Tone, { bar: string; text: string; swatch: string }> = 
 
 export const stageLabel = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
+/** Outlined when off, filled when on, so the state reads without the label. Stroked for medium-weight text. */
+export function StarIcon({ filled, className = "size-4" }: { filled: boolean; className?: string }) {
+  return (
+    <svg viewBox="0 0 16 16" className={`shrink-0 ${className}`} aria-hidden>
+      <path
+        d="M8 2.1 9.53 6.5l4.65.09-3.71 2.81 1.35 4.46L8 11.2l-3.82 2.66 1.35-4.46-3.71-2.81 4.65-.09Z"
+        fill={filled ? "currentColor" : "none"}
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 /** Progress plus a word, so the stage reads without relying on colour. */
 export function StageBar({ status }: { status: Status }) {
   const style = TONE_STYLE[TONE[status]];

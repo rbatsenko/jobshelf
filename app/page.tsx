@@ -4,12 +4,12 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import AddJobForm from "@/components/add-job-form";
 import FeatureTip from "@/components/feature-tip";
-import { JobTags, Salary, ScopeTag, StageBar, sinceLabel, stageLabel } from "@/components/bits";
+import { JobTags, Salary, ScopeTag, StageBar, StarIcon, sinceLabel, stageLabel } from "@/components/bits";
 import JobEditor from "@/components/job-editor";
 import SavingHelp from "@/components/saving-help";
 import Select from "@/components/select";
 import SyncPanel from "@/components/sync-panel";
-import { card, primaryButton } from "@/components/styles";
+import { buttonMotion, card, primaryButton } from "@/components/styles";
 import { STATUSES } from "@/lib/types";
 import {
   SORTS,
@@ -33,8 +33,7 @@ type Message = { tone: "ok" | "error"; text: string } | null;
 const searchInput =
   "h-11 w-full rounded-field border border-line bg-raised px-3.5 text-base outline-none focus:border-brand sm:w-64";
 
-const toolbarButton =
-  "h-11 flex-1 whitespace-nowrap rounded-field border border-line px-3 text-[0.9375rem] font-medium text-soft transition hover:bg-sunken hover:text-text sm:flex-none sm:px-4 sm:text-base";
+const toolbarButton = `h-11 flex-1 whitespace-nowrap rounded-field border border-line px-3 text-[0.9375rem] font-medium text-soft hover:bg-sunken hover:text-text sm:flex-none sm:px-4 sm:text-base ${buttonMotion}`;
 
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
@@ -318,15 +317,15 @@ export default function MyJobsPage() {
 
       {ready && !jobs.length && !adding && (
         <div className={`${card} p-6 sm:p-12 sm:text-center`}>
-          <h2 className="text-xl font-semibold sm:text-2xl">Add the first job you're chasing</h2>
-          <p className="mt-2 max-w-md text-base text-soft sm:mx-auto">
+          <h2 className="enter text-xl font-semibold sm:text-2xl">Add the first job you're chasing</h2>
+          <p className="enter mt-2 max-w-md text-base text-soft [--i:1] sm:mx-auto">
             Paste one you found anywhere, or browse the board and add from there. Everything stays in this browser.
           </p>
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
+          <div className="enter mt-6 flex flex-col gap-3 [--i:2] sm:flex-row sm:justify-center">
             <button onClick={() => setAdding(true)} className={primaryButton}>Add a job</button>
             <Link
               href="/board"
-              className="flex h-11 items-center justify-center rounded-field border border-line px-5 text-base font-medium text-soft hover:bg-sunken"
+              className={`flex h-11 items-center justify-center rounded-field border border-line px-5 text-base font-medium text-soft hover:bg-sunken hover:text-text ${buttonMotion}`}
             >
               Browse the board
             </Link>
@@ -341,11 +340,16 @@ export default function MyJobsPage() {
               <button
                 onClick={() => setOpenId(openId === job.id ? null : job.id)}
                 aria-expanded={openId === job.id}
-                className="flex w-full flex-col items-start gap-2.5 px-4 py-4 text-left transition hover:bg-sunken sm:flex-row sm:items-center sm:gap-5 sm:px-5"
+                className="flex w-full flex-col items-start gap-2.5 px-4 py-4 text-left transition-[background-color] duration-100 hover:bg-sunken sm:flex-row sm:items-center sm:gap-5 sm:px-5"
               >
                 <span className="w-full min-w-0 flex-1">
                   <span className="block text-lg font-semibold leading-snug">
-                    {job.starred && <span className="mr-2 text-brand">★</span>}
+                    {job.starred && (
+                      <span className="mr-2 inline-flex align-[-0.125em] text-brand">
+                        <StarIcon filled />
+                        <span className="sr-only">Starred: </span>
+                      </span>
+                    )}
                     {job.title}
                   </span>
                   <span className="mt-0.5 block truncate text-base text-text">{job.company}</span>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { buttonMotion } from "./styles";
 
 type FeatureTipProps = {
   /** Remembers the dismissal, so each tip shows once per browser. */
@@ -43,7 +44,8 @@ export default function FeatureTip({ id, title, text, action, onAction, when = t
     <div
       role="dialog"
       aria-label={title}
-      className="absolute right-0 top-[calc(100%+12px)] z-40 w-72 max-w-[calc(100vw-2rem)] rounded-card border border-line bg-raised p-4 text-left shadow-[var(--shadow)] motion-safe:animate-[tip-in_240ms_ease-out] sm:left-1/2 sm:right-auto sm:-translate-x-1/2"
+      // Grows out of its arrow: right-aligned on phones, centred from sm up.
+      className="pop absolute right-0 top-[calc(100%+12px)] z-40 w-72 max-w-[calc(100vw-2rem)] rounded-card border border-line bg-raised p-4 text-left shadow-[var(--shadow)] [--pop-origin:calc(100%-1.875rem)_top] sm:left-1/2 sm:right-auto sm:-translate-x-1/2 sm:[--pop-origin:top]"
     >
       <span aria-hidden className="absolute -top-1.5 right-6 h-3 w-3 rotate-45 border-l border-t border-line bg-raised sm:left-1/2 sm:right-auto sm:-translate-x-1/2" />
       <p className="text-sm font-semibold">{title}</p>
@@ -54,11 +56,11 @@ export default function FeatureTip({ id, title, text, action, onAction, when = t
             dismiss();
             onAction();
           }}
-          className="h-9 rounded-md bg-brand px-3 text-sm font-semibold text-brand-text hover:brightness-110"
+          className={`h-9 rounded-md bg-brand px-3 text-sm font-semibold text-brand-text hover:brightness-110 ${buttonMotion}`}
         >
           {action}
         </button>
-        <button onClick={dismiss} className="h-9 rounded-md px-3 text-sm text-soft hover:bg-sunken hover:text-text">
+        <button onClick={dismiss} className={`h-9 rounded-md px-3 text-sm text-soft hover:bg-sunken hover:text-text ${buttonMotion}`}>
           Not now
         </button>
       </div>

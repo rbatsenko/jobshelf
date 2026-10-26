@@ -24,6 +24,9 @@
 
   --focus: #1f6f4a;
   --shadow: 0 1px 2px rgb(28 25 23 / 0.06), 0 8px 24px -12px rgb(28 25 23 / 0.18);
+
+  /* Starts fast and settles, so a popover is mostly there by the time the eye lands. */
+  --ease-pop: cubic-bezier(0.23, 1, 0.32, 1);
   color-scheme: light;
 }
 
@@ -133,11 +136,41 @@ html, body {
 
 .scroll-thin { scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; }
 
-@keyframes tip-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+/* Controls draw their own pressed state; the grey tap flash would double it. */
+:where(button, a, [role="option"]) { -webkit-tap-highlight-color: transparent; }
+
+/*
+ * Popovers grow out of their trigger. @starting-style gives a freshly mounted one
+ * its first frame, so no JS is needed; closing removes it at once. Under reduced
+ * motion only the fade is left.
+ */
+.pop {
+  transform-origin: var(--pop-origin, top left);
+  transition: opacity 150ms var(--ease-pop), scale 150ms var(--ease-pop);
+}
+@starting-style {
+  .pop { opacity: 0; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  @starting-style {
+    .pop { scale: 0.96; }
+  }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+/*
+ * A staged entrance for rare moments, like the first-run empty state. Set --i on
+ * each chunk (title, text, actions) to bring them in 100ms apart.
+ */
+.enter {
+  animation: enter-fade 300ms ease-out both;
+  animation-delay: calc(var(--i, 0) * 100ms);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .enter { animation-name: enter-rise; }
+}
+@keyframes enter-fade {
+  from { opacity: 0; }
+}
+@keyframes enter-rise {
+  from { opacity: 0; translate: 0 12px; filter: blur(4px); }
 }
