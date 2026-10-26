@@ -6,6 +6,7 @@ import AddJobForm from "@/components/add-job-form";
 import FeatureTip from "@/components/feature-tip";
 import { JobTags, Salary, ScopeTag, StageBar, StarIcon, sinceLabel, stageLabel } from "@/components/bits";
 import JobEditor from "@/components/job-editor";
+import SearchField from "@/components/search-field";
 import SavingHelp from "@/components/saving-help";
 import Select from "@/components/select";
 import SyncPanel from "@/components/sync-panel";
@@ -29,9 +30,6 @@ import {
 import { push, readSync, syncAvailable, syncNow, type SyncState } from "@/lib/sync";
 
 type Message = { tone: "ok" | "error"; text: string } | null;
-
-const searchInput =
-  "h-11 w-full rounded-field border border-line bg-raised px-3.5 text-base outline-none focus:border-brand sm:w-64";
 
 const toolbarButton = `h-11 flex-1 whitespace-nowrap rounded-field border border-line px-3 text-[0.9375rem] font-medium text-soft hover:bg-sunken hover:text-text sm:flex-none sm:px-4 sm:text-base ${buttonMotion}`;
 
@@ -254,12 +252,12 @@ export default function MyJobsPage() {
         <div className="mb-5 space-y-4">
           {jobs.length > 1 && (
             <div className="grid grid-cols-2 gap-2.5 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
-              <input
+              <SearchField
                 value={q}
-                onChange={(e) => setQ(e.target.value)}
+                onChange={setQ}
                 placeholder="Search company or role"
-                aria-label="Search my jobs"
-                className={`${searchInput} col-span-2`}
+                label="Search my jobs"
+                className="col-span-2 sm:w-64"
               />
               <Select
                 label="Stage"

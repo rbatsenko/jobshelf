@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ProfileForm from "@/components/profile-form";
+import SearchField from "@/components/search-field";
 import Select from "@/components/select";
 import { JobTags, Salary, ScopeTag, sinceLabel } from "@/components/bits";
 import { buttonMotion, primaryButton } from "@/components/styles";
@@ -20,9 +21,6 @@ import {
   type ViewerProfile,
 } from "@/lib/viewer-profile";
 import type { Job } from "@/lib/types";
-
-const searchInput =
-  "h-11 rounded-field border border-line bg-raised px-3.5 text-base outline-none focus:border-brand";
 
 type Payload = {
   jobs: Job[];
@@ -220,12 +218,12 @@ export default function Board() {
       )}
 
       <div className="mb-6 grid grid-cols-2 gap-2.5 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
-        <input
+        <SearchField
           value={q}
-          onChange={(e) => setQ(e.target.value)}
+          onChange={setQ}
           placeholder="Search company, role, stack"
-          className={`${searchInput} col-span-2 sm:w-72`}
-          aria-label="Search"
+          label="Search"
+          className="col-span-2 sm:w-72"
         />
         <Select
           label="Location"
